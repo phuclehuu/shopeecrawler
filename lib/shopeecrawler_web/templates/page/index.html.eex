@@ -1,0 +1,25 @@
+<section class="phx-hero">
+  <h1><%= gettext "Welcome to %{name}!", name: "Demo" %></h1>
+  <p>Shopee data crawling</p>
+</section>
+<hr>
+
+<div class="row row-wrap">
+<%= for item <- @data do %>
+  <div class="column column-25" style="margin-bottom: 10px;">
+    <div class="product">
+      <img src="https://cf.shopee.vn/file/<%= item["image"] %>_tn">
+      <ul>
+        <li><div class="product-name"><%= item["name"] %></div></li>
+        <li>
+          Price: <%= item["price"] %>
+        </li>
+        <li>
+          Sold: <%= item["sold"] %>
+        </li>
+      </ul>
+      <div class="clear"></div>
+    </div>
+  </div>
+<% end %>
+</div>
