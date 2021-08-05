@@ -9,7 +9,8 @@ defmodule ShopeeSpider do
         items
       _ ->
         Enum.filter(items, fn item ->
-          String.contains?(item["name"], search_term) == true
+          {:ok, search_reg} = Regex.compile(Regex.escape(search_term), "i")
+          String.match?(item["name"], search_reg) == true
         end)
     end
   end
