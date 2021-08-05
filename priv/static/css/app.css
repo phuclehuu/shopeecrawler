@@ -87,24 +87,23 @@ header nav a {
   display: block;
 }
 
-@media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
-  header section {
-    flex-direction: row;
-  }
-  header nav ul {
-    margin: 1rem;
-  }
-  .phx-logo {
-    flex-basis: 527px;
-    margin: 2rem 1rem;
-  }
+.search-cont {
+  position: relative;
+  width: 100%;
+  margin: 0;
 }
 
-@media (max-width: 600px) {
-  .row .column.column-25 {
-    width: 100%;
-    max-width: none;
-  }
+.search-cont input {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  padding-right: 160px;
+}
+
+.search-cont select {
+  border-radius: 0 5px 5px 0;
+  position: absolute;
+  right: 0;
 }
 
 .product {
@@ -126,6 +125,34 @@ header nav a {
 
 .clear {
   clear: both;
+}
+
+@media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
+  header section {
+    flex-direction: row;
+  }
+  header nav ul {
+    margin: 1rem;
+  }
+  .phx-logo {
+    flex-basis: 527px;
+    margin: 2rem 1rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .row .column.column-25, .row .column.column-75 {
+    width: 100%;
+    max-width: none;
+    float: left;
+    position: relative;
+  }
+
+  .search-cont input, .search-cont select {
+    position: relative;
+    float: left;
+    width: 100%;
+  }
 }
 
 /* This file is for your main application css. */

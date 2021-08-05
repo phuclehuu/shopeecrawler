@@ -1,11 +1,23 @@
 <section class="phx-hero">
   <h1><%= gettext "Welcome to %{name}!", name: "Demo" %></h1>
   <p>Shopee data crawling</p>
+  <%= form_for @conn, Routes.page_path(@conn, :index), [method: :get, class: "pull-right", id: "searchForm"], fn f -> %>
+    <div class="search-cont row">
+        <div class="column column-75 container">
+            <%= search_input f, :query, prompt: "- Category -" %>
+            <%= select f, :shop_categoryids, Enum.map(@data.categories, &{&1["name"], &1["category_id"]}), [prompt: "- Category -", onchange: "document.getElementById('searchForm').submit()"] %>
+        </div>
+        <div class="column column-25">
+          <%= submit "Search" %>
+        </div>
+        <div class="clear"></div>
+    </div>
+  <% end %>
 </section>
 <hr>
 
 <div class="row row-wrap">
-<%= for item <- @data do %>
+<%= for item <- @data.items do %>
   <div class="column column-25" style="margin-bottom: 10px;">
     <div class="product">
       <img src="https://cf.shopee.vn/file/<%= item["image"] %>_tn">
