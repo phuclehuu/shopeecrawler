@@ -149,6 +149,7 @@ header nav a {
   }
 
   .search-cont input, .search-cont select {
+    padding-right: initial;
     position: relative;
     float: left;
     width: 100%;
