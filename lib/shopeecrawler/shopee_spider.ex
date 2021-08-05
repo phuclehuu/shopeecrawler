@@ -1,16 +1,29 @@
 defmodule ShopeeSpider do
-  def fetch(url) do
+  def fetch(url, params \\ %{}) do
     response = Crawly.fetch(url)
 
     items = parse_item(response)
 
-    items
+    case search_term = get_in(params, ["query"]) do
+      nil ->
+        items
+      _ ->
+        Enum.filter(items, fn item ->
+          String.contains?(item["name"], search_term) == true
+        end)
+    end
+  end
+
+  def fetch_cats(url) do
+    response = Crawly.fetch(url)
+
+    cats = parse_cat(response)
+
+    cats
   end
 
   defp parse_item(response) do
-    {:ok, document} = Floki.parse_document(response.body)
-
-    {:ok, results} = Poison.decode(document)
+    {:ok, results} = parse_response(response)
 
     case results["error"] do
       nil ->
@@ -34,6 +47,39 @@ defmodule ShopeeSpider do
         end)
 
       _ -> []
+    end
+  end
+
+  defp parse_cat(response) do
+    {:ok, results} = parse_response(response)
+
+    case results["error"] do
+      e when e in [nil, 0] ->
+        Enum.map(results["data"]["shop_categories"], fn cat ->
+          category_id = cat["shop_category_id"]
+
+          name = cat["display_name"]
+
+          image = cat["image"]
+
+          %{
+            "name" => name,
+            "image" => image,
+            "category_id" => category_id
+          }
+        end)
+
+      _ ->
+        []
+    end
+  end
+
+  defp parse_response(response) do
+    case Floki.parse_document(response.body) do
+      {:ok, document} ->
+        Poison.decode(document)
+      _ ->
+        {:ok, %{:error => "Can't parse response"}}
     end
   end
 end
