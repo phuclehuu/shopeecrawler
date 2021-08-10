@@ -24,22 +24,8 @@ defmodule SimpleCache do
     GenServer.cast(__MODULE__, {:set, key, value, ttl})
   end
 
-  def get(state, key) do
-    rs = Ets.lookup(state.table, key) |> List.first()
-
-    if rs == nil do
-      {:error, :not_found}
-    else
-      expired_at = elem(rs, 2)
-
-      cond do
-        NaiveDateTime.diff(NaiveDateTime.utc_now(), expired_at) > 0 ->
-          {:error, :expired}
-
-        true ->
-          {:ok, elem(rs, 1)}
-      end
-    end
+  def get(key) do
+    GenServer.call(__MODULE__, {:get, key})
   end
 
   def delete(key) do
@@ -85,6 +71,25 @@ defmodule SimpleCache do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_call({:get, key}, _from, state) do
+    rs = Ets.lookup(state.table, key) |> List.first()
+
+    if rs == nil do
+      {:reply, {:error, :not_found}, state}
+    else
+      expired_at = elem(rs, 2)
+
+      cond do
+        NaiveDateTime.diff(NaiveDateTime.utc_now(), expired_at) > 0 ->
+          {:reply, {:error, :expired}, state}
+
+        true ->
+          {:reply, {:ok, elem(rs, 1)}, state}
+      end
+    end
+  end
+
   @moduledoc """
   A simple ETS based cache for expensive function calls.
   """
@@ -93,8 +98,8 @@ defmodule SimpleCache do
   Retrieve a cached value or apply the given function caching and returning
   the result.
   """
-  def get(state, mod, fun, args, opts \\ []) do
-    case lookup(state, mod, fun, args) do
+  def get(mod, fun, args, opts \\ []) do
+    case lookup(mod, fun, args) do
       nil ->
         ttl = Keyword.get(opts, :ttl, 3600)
         cache_apply(mod, fun, args, ttl)
@@ -107,8 +112,8 @@ defmodule SimpleCache do
   @doc """
   Lookup a cached result and check the freshness
   """
-  def lookup(state, mod, fun, args) do
-    case get(state, [mod, fun, args]) do
+  def lookup(mod, fun, args) do
+    case get([mod, fun, args]) do
       {:ok, data} ->
         IO.puts("HIT")
         data
