@@ -5,7 +5,7 @@
     <div class="search-cont row">
         <div class="column column-75 container">
             <%= search_input f, :query, prompt: "- Category -" %>
-            <%= select f, :shop_categoryids, Enum.map(@data.categories, &{&1["name"], &1["category_id"]}), [prompt: "- Category -", onchange: "document.getElementById('searchForm').submit()"] %>
+            <%= select f, :shop_categoryids, Enum.map(@data.categories, &{&1["name"], &1["category_id"]}), [prompt: "- Category -"] %>
         </div>
         <div class="column column-25">
           <%= submit "Search" %>
@@ -14,9 +14,20 @@
     </div>
   <% end %>
 </section>
-<hr>
 
 <div class="row row-wrap">
+  <div class="column column-100">
+    <div class="row nav-menu">
+      <div class="column">
+        <%= link("Home", to: "/", class: if "home" == "#{@data.active}" do "active" end) %>
+      </div>
+      <%= for cat <- @data.categories do %>
+        <div class="column">
+          <%= link(cat["name"], to: cat["slug"], class: if "#{cat["category_id"]}" == "#{@data.active}" do "active" end) %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 <%= for item <- @data.items do %>
   <div class="column column-25" style="margin-bottom: 10px;">
     <div class="product">
