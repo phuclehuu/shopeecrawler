@@ -155,3 +155,24 @@ header nav a {
     width: 100%;
   }
 }
+
+.nav-menu {
+  padding: 0 10px 20px;
+}
+
+.nav-menu .column {
+  padding: 0;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #d1d1d1;
+}
+
+.nav-menu a:hover, .nav-menu a.active  {
+  background: #fff;
+}
+
+.nav-menu a {
+  padding: 10px 5px;
+  float: left;
+  width: 100%;
+  background: #eee;
+}

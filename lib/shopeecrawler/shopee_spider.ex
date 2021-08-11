@@ -66,7 +66,8 @@ defmodule ShopeeSpider do
           %{
             "name" => name,
             "image" => image,
-            "category_id" => category_id
+            "category_id" => category_id,
+            "slug" => "/category/#{category_id}"
           }
         end)
 

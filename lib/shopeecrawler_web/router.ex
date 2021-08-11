@@ -18,7 +18,9 @@ defmodule ShopeecrawlerWeb.Router do
 
     get "/", PageController, :index
 
-    resources "/search", PageController
+    get "/category", PageController, :index
+
+    get "/category/:id", PageController, :category
   end
 
   # Other scopes may use custom stacks.
